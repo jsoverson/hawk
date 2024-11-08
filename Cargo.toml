@@ -1,0 +1,32 @@
+[package]
+name = "hawktui"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = { version = "1.0" }
+tokio = { version = "1.41.0", features = [
+  "macros",
+  "process",
+  "io-std",
+  "io-util",
+  "sync",
+  "parking_lot",
+  "fs",
+  "time",
+  "rt-multi-thread",
+] }
+color-eyre = "0.6.3"
+ratatui = { version = "0.29.0", features = ["all-widgets"] }
+strum = "0.26.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1.0.70" }
+clap = { version = "4.5.20", features = ["derive"] }
+parking_lot = "0.12.3"
+crossterm = { version = "0.28.1", features = [] }
+vt100 = "0.15.2"
+bytes = "1.8.0"
+portable-pty = "0.8.1"
+tui-term = "0.2.0"
