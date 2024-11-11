@@ -1,7 +1,7 @@
-use std::sync::Arc;
+use std::ops::{Deref, DerefMut};
 
-pub struct List<T> {
-    items: Vec<Arc<T>>,
+pub(crate) struct List<T> {
+    items: Vec<T>,
     index: usize,
 }
 
@@ -17,25 +17,32 @@ where
     }
 }
 
+#[allow(unused)]
 impl<T> List<T>
 where
-    T: Send + Sync,
+    T: Clone + Send + Sync,
 {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self::default()
     }
 
-    pub fn add(&mut self, item: T) {
-        self.items.push(Arc::new(item));
+    pub(crate) fn get(&self, index: usize) -> Option<&T> {
+        self.items.get(index)
     }
 
-    #[allow(unused)]
-    pub fn next(&mut self) {
+    pub(crate) fn get_mut(&mut self, index: usize) -> Option<&mut T> {
+        self.items.get_mut(index)
+    }
+
+    pub(crate) fn add(&mut self, item: T) {
+        self.items.push(item);
+    }
+
+    pub(crate) fn next(&mut self) {
         self.index = (self.index + 1) % self.items.len();
     }
 
-    #[allow(unused)]
-    pub fn prev(&mut self) {
+    pub(crate) fn prev(&mut self) {
         if self.index == 0 {
             self.index = self.items.len() - 1;
         } else {
@@ -43,7 +50,28 @@ where
         }
     }
 
-    pub fn selected(&self) -> Arc<T> {
+    pub(crate) fn focused(&self) -> T {
         self.items.get(self.index).unwrap().clone()
+    }
+
+    pub(crate) fn iter(&self) -> impl Iterator<Item = &T> {
+        self.items.iter()
+    }
+
+    pub(crate) fn iter_mut(&mut self) -> impl Iterator<Item = &mut T> {
+        self.items.iter_mut()
+    }
+}
+
+impl<T> Deref for List<T> {
+    type Target = Vec<T>;
+    fn deref(&self) -> &Self::Target {
+        &self.items
+    }
+}
+
+impl<T> DerefMut for List<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.items
     }
 }

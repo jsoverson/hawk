@@ -1,3 +1,3 @@
 
-run:
-  cargo run -- -c config.json
+example:
+  cargo run -- -c examples/Procfile
